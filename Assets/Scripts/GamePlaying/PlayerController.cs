@@ -49,6 +49,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 
+
 	//==========Doorに当たった時==========
 
 	int RandomNumber(){
