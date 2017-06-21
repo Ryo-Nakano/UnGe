@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.IO;
+using System.IO;//←これはなんだ？
 using System.Collections.Generic;
 //ここを制限することで、①[可読性上がる(目的が明確化されるから)]②[予測変換少なくなる]
 
@@ -16,7 +16,7 @@ public class csvManager : MonoBehaviour
 
 	//CSV読み込んで、string型2次元配列で返す関数
 	public static void GetCsvData (string dataPath)
-	{//csvファイルのデータを読み込み
+	{
 		
 		data = (TextAsset)Resources.Load (dataPath);//Resourcesフォルダからデータの取得！
 		Debug.Log (data.ToString ());
