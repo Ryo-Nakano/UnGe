@@ -60,8 +60,9 @@ public class PlayerController : MonoBehaviour {
 	//ドアに当たった時の処理
 	void OnTriggerEnter(Collider col){
 
-		//Door通れるとき
 		if(col.tag == "Door"){//ぶつかった相手がDoorだった時
+
+			//Door通れるとき
 			if (RandomNumber () == 0) {
 				print ("GoNextDoor!!");
 
@@ -72,17 +73,19 @@ public class PlayerController : MonoBehaviour {
 				count += 100;
 				nowScore.text = "Score : " + count;//現在のスコア表示
 
+//				Instantiate ("GoodEffect", this.transform.position, Quaternion.identity);
+
 				//効果音鳴らす
 				//パーティクルシステム呼び出し(Instantiate？)
 
 				//Door通れないとき
 			} else {
 				print ("Stop!!");
-//				isMove = false;//動き止めて
-//				anim.SetBool ("isGo", false);//アニメーションも止める 
-//				PlayerPrefs.SetInt("Score", count);//Scoreの名前でcountの値を保存！
-//				Invoke("MoveToGameOver", 3f);//3秒後GameOverシーン移動
-//				print("GoToGameOverScene");
+				isMove = false;//動き止めて
+				anim.SetBool ("isGo", false);//アニメーションも止める 
+				PlayerPrefs.SetInt("Score", count);//Scoreの名前でcountの値を保存！
+				Invoke("MoveToGameOver", 3f);//3秒後GameOverシーン移動
+				print("GoToGameOverScene");
 
 				//効果音鳴らす
 			}

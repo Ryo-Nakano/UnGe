@@ -23,7 +23,7 @@ public class GameOverSceneManager : MonoBehaviour {
 		}else{//HighScore存在する時
 			if (highScore < lastScore) {//直近の結果の方がhighScoreよりも高かった時
 				highScore = lastScore;//highScoreにlastSccoreを代入して
-				PlayerPrefs.SetInt ("HighScore", highScore);
+				PlayerPrefs.SetInt ("HighScore",lastScore);//lastScoreの値をHighScoreとして保存
 			} else {//普通にhighScoreが最強だった場合
 				highScore = PlayerPrefs.GetInt("HighScore");
 			}
@@ -31,8 +31,8 @@ public class GameOverSceneManager : MonoBehaviour {
 			
 
 		//スコア表示
-		lastScoreText.text = "LastScore : " + lastScore;
-		highScoreText.text = "HighScore : " + highScore;
+		lastScoreText.text = "さっきのスコア : " + lastScore;
+		highScoreText.text = "全盛期のスコア : " + highScore;
 
 		//highScoreの方がlastScoreよりも大きい時もなぜかlastScoreの値がhighScoreに保存されてしまう
 	}
