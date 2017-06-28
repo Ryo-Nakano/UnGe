@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour {
 		howManyDoorsText.text = "残りDoor枚数 : " + howManyDoors;//先ず最初にドア残り枚数表示
 		nowScore.text = "Score : " + 0;
 
+
+
 	}
 	
 	// Update is called once per frame

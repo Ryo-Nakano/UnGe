@@ -7,18 +7,15 @@ using System.Collections.Generic;
 
 public class csvManager : MonoBehaviour
 {
-		
 
-	TextAsset data;
-	string[,] csvData;
 	//2次元配列を宣言(ゴール)
 
 
 	//CSV読み込んで、string型2次元配列で返す関数
-	public static void GetCsvData (string dataPath)
+	public static string[,] GetCsvData (string dataPath)
 	{
 		
-		data = (TextAsset)Resources.Load (dataPath);//Resourcesフォルダからデータの取得！
+		TextAsset data = (TextAsset)Resources.Load (dataPath);//Resourcesフォルダからデータの取得！
 		Debug.Log (data.ToString ());
 
 		string[] rows = data.ToString ().Split ("\n" [0]);//先ず横に切って、その1行1行をrowsにぶち込む！(stringに変換！)
@@ -26,7 +23,7 @@ public class csvManager : MonoBehaviour
 
 		string[] cols = rows [0].Split ("," [0]);//次はどっかのrowを縦に切る！(要素数の取得が目的)
 
-		csvData = new string[rows.Length, cols.Length];//csvData(2次元配列)の縦と横の大きさ？を指定！
+		string[,] csvData = new string[rows.Length, cols.Length];//csvData(2次元配列)の縦と横の大きさ？を指定！
 
 		//要は、rowsが行、colsが列！
 
@@ -41,6 +38,8 @@ public class csvManager : MonoBehaviour
 				Debug.Log ("(" + i + "," + j + ") = " + csvData [i, j]);
 			}
 		}
+
+		return csvData;
 	}
 
 	public static void WriteData (string dataPath, string[,] newData)
