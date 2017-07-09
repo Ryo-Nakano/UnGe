@@ -8,7 +8,12 @@ public class PlayerController : MonoBehaviour {
 
 	[SerializeField]float speed;
 	public bool isMove = true; 
-	 Animator anim;
+	Animator anim;
+
+	AudioSource audioSource;//取得したコンポーネント格納しておく為の変数定義！
+	[SerializeField] AudioClip moveSound;//音素材後でUintyからアタッチ！
+	[SerializeField] AudioClip gameOverSound;
+	[SerializeField] GameObject bgm;//GameObject型のbgm変数！
 
 	public Text howManyDoorsText;
 	public Text nowScore;
@@ -19,11 +24,10 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		anim = this.gameObject.GetComponent<Animator>();//Animator取得して格納
+		audioSource = gameObject.GetComponent<AudioSource> ();//AudioSourceのコンポーネント取得、AudioSourceクラスのaudioSource変数に格納！
+
 		howManyDoorsText.text = "残りDoor枚数 : " + howManyDoors;//先ず最初にドア残り枚数表示
 		nowScore.text = "Score : " + 0;
-
-
-
 	}
 	
 	// Update is called once per frame
@@ -35,11 +39,13 @@ public class PlayerController : MonoBehaviour {
 
 	//ボタン押して左に動く
 	public void MoveToLeft(){
+		audioSource.PlayOneShot (moveSound);
 		this.gameObject.transform.position = new Vector3 (1.4f, 0, this.gameObject.transform.position.z); 
 	}
 
 	//ボタン押して右に動く
 	public void MoveToRight(){
+		audioSource.PlayOneShot (moveSound);
 		this.gameObject.transform.position = new Vector3 (3.2f, 0, this.gameObject.transform.position.z); 
 	}
 
@@ -66,7 +72,7 @@ public class PlayerController : MonoBehaviour {
 
 			//Door通れるとき
 			if (RandomNumber () == 0) {
-				print ("GoNextDoor!!");
+				Debug.Log("GoNextDoor!!");
 
 				//残りDoor枚数-1の処理
 				howManyDoors--;//Door枚数-1
@@ -82,12 +88,14 @@ public class PlayerController : MonoBehaviour {
 
 				//Door通れないとき
 			} else {
-				print ("Stop!!");
+				Debug.Log("Stop!!");
 				isMove = false;//動き止めて
 				anim.SetBool ("isGo", false);//アニメーションも止める 
 				PlayerPrefs.SetInt("Score", count);//Scoreの名前でcountの値を保存！
 				Invoke("MoveToGameOver", 3f);//3秒後GameOverシーン移動
-				print("GoToGameOverScene");
+				audioSource.PlayOneShot (gameOverSound);
+				Destroy (bgm);
+				Debug.Log("GoToGameOverScene");
 
 				//効果音鳴らす
 			}
@@ -95,12 +103,14 @@ public class PlayerController : MonoBehaviour {
 
 		//最初左右選択しないと死ぬ
 		if(col.tag == "Die"){
-			print ("Select Right or Left!!");
+			Debug.Log("Select Right or Left!!");
 			isMove = false;//動き止めて
 			anim.SetBool ("isGo", false); //アニメーションも止める
 			PlayerPrefs.SetInt("Score", count);//Scoreの名前でcountの値を保存！
 			Invoke("MoveToGameOver", 3f);//3秒後GameOverシーン移動
-			print("GoToGameOverScene");
+			Debug.Log("GoToGameOverScene");
+			Destroy (bgm);
+			audioSource.PlayOneShot (gameOverSound);
 		}
 	}
 

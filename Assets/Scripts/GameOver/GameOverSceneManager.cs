@@ -11,9 +11,13 @@ public class GameOverSceneManager : MonoBehaviour {
 	int lastScore;
 	int highScore;
 
+	AudioSource audioSource;//取得したコンポーネント格納しておく為の変数定義！
+	public AudioClip buttonSound;//あとでUnityからアタッチ！
+
 
 	// Use this for initialization
 	void Start () {
+		audioSource = gameObject.GetComponent<AudioSource> ();//AudioSourceのコンポーネント取得、AudioSourceクラスのaudioSource変数に格納！
 		lastScore = PlayerPrefs.GetInt ("Score");//Scoreの名前で保存してあるデータを取ってきて、lastScoreに格納
 
 		//HighScore選別
@@ -45,6 +49,12 @@ public class GameOverSceneManager : MonoBehaviour {
 
 	//MainMenueに戻るメソッド定義
 	public void ReturnToMainMenue(){//ボタンから呼び出すからpublic
-		SceneManager.LoadScene("MainMenue");
+		StartCoroutine("MoveMenueWithTimer");
+	}
+
+	IEnumerator MoveMenueWithTimer(){
+		audioSource.PlayOneShot(buttonSound);//音出します
+		yield return new WaitForSeconds(2.3f);//2秒待ちます
+		SceneManager.LoadScene ("MainMenue");//シーン移動します
 	}
 }
