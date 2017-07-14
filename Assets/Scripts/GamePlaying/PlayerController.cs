@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField] AudioClip gameOverSound;
 	[SerializeField] AudioClip successSound;
 	[SerializeField] GameObject bgm;//GameObject型のbgm変数！
+	[SerializeField] GameObject goodEffect;
 
 	public Text howManyDoorsText;
 	public Text nowScore;
@@ -84,9 +85,7 @@ public class PlayerController : MonoBehaviour {
 
 				audioSource.PlayOneShot (successSound);//扉突破時効果音鳴らす
 
-//				Instantiate ("GoodEffect", this.transform.position, Quaternion.identity);
-
-				//パーティクルシステム呼び出し(Instantiate？)
+				Instantiate (goodEffect, this.transform.position, this.transform.rotation * Quaternion.Euler(-90, 0, 0));//Playerの位置にInstantiate
 
 				//Door通れないとき
 			} else {
