@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour {
 	AudioSource audioSource;//取得したコンポーネント格納しておく為の変数定義！
 	[SerializeField] AudioClip moveSound;//音素材後でUintyからアタッチ！
 	[SerializeField] AudioClip gameOverSound;
+	[SerializeField] AudioClip successSound;
 	[SerializeField] GameObject bgm;//GameObject型のbgm変数！
 
 	public Text howManyDoorsText;
@@ -81,9 +82,10 @@ public class PlayerController : MonoBehaviour {
 				count += 100;
 				nowScore.text = "Score : " + count;//現在のスコア表示
 
+				audioSource.PlayOneShot (successSound);//扉突破時効果音鳴らす
+
 //				Instantiate ("GoodEffect", this.transform.position, Quaternion.identity);
 
-				//効果音鳴らす
 				//パーティクルシステム呼び出し(Instantiate？)
 
 				//Door通れないとき
