@@ -16,23 +16,29 @@ public class GameOverSceneManager : MonoBehaviour {
 
 
 	// Use this for initialization
-	void Start () {
+	void Awake(){//Startよりも先に呼ばれる！
 		audioSource = gameObject.GetComponent<AudioSource> ();//AudioSourceのコンポーネント取得、AudioSourceクラスのaudioSource変数に格納！
 		lastScore = PlayerPrefs.GetInt ("Score");//Scoreの名前で保存してあるデータを取ってきて、lastScoreに格納
+	}
+
+	void Start () {
 
 		//HighScore選別
 		if(PlayerPrefs.HasKey("HighScore") == false){//HighScoreが存在しない時
 			highScore = lastScore;//lastScoreをhighScoreにして、
 			PlayerPrefs.SetInt ("HighScore", lastScore);//HighScoreデータとして格納
+
 		}else{//HighScore存在する時
+			highScore = PlayerPrefs.GetInt("HighScore");
+
 			if (highScore < lastScore) {//直近の結果の方がhighScoreよりも高かった時
 				highScore = lastScore;//highScoreにlastSccoreを代入して
 				PlayerPrefs.SetInt ("HighScore",lastScore);//lastScoreの値をHighScoreとして保存
 			} else {//普通にhighScoreが最強だった場合
-				highScore = PlayerPrefs.GetInt("HighScore");
+				//				highScore = PlayerPrefs.GetInt("HighScore");
 			}
 		}
-			
+
 
 		//スコア表示
 		lastScoreText.text = "さっきのスコア : " + lastScore;
@@ -40,10 +46,10 @@ public class GameOverSceneManager : MonoBehaviour {
 
 		//highScoreの方がlastScoreよりも大きい時もなぜかlastScoreの値がhighScoreに保存されてしまう
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-		
+
 	}
 
 
@@ -54,7 +60,7 @@ public class GameOverSceneManager : MonoBehaviour {
 
 	IEnumerator MoveMenueWithTimer(){
 		audioSource.PlayOneShot(buttonSound);//音出します
-		yield return new WaitForSeconds(2.3f);//2秒待ちます
+		yield return new WaitForSeconds(2.3f);//2.3秒待ちます
 		SceneManager.LoadScene ("MainMenue");//シーン移動します
 	}
 }
