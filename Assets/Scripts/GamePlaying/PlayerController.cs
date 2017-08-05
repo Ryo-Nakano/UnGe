@@ -127,7 +127,8 @@ public class PlayerController : MonoBehaviour {
 
 	//GameOverシーンに移動する
 	void MoveToGameOver(){
-		DataManager.instance.AddRow (count, gameClear);
+		DataManager.instance.AddRow (count, gameClear);//行足して...
+		DataManager.instance.Save();//更新内容をCSVファイル適用！
 		Debug.Log ("SAVE!");
 		SceneManager.LoadScene("GameOver");
 	}

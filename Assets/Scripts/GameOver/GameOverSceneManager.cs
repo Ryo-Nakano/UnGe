@@ -55,12 +55,12 @@ public class GameOverSceneManager : MonoBehaviour {
 
 	//MainMenueに戻るメソッド定義
 	public void ReturnToMainMenue(){//ボタンから呼び出すからpublic
-		StartCoroutine("MoveMenueWithTimer");
+		StartCoroutine("MoveSceneWithTimer", "MainMenue");//MainMenueに移動！
 	}
 
-	IEnumerator MoveMenueWithTimer(){
+	IEnumerator MoveSceneWithTimer(string sceneName){
 		audioSource.PlayOneShot(buttonSound);//音出します
-		yield return new WaitForSeconds(2.3f);//2.3秒待ちます
-		SceneManager.LoadScene ("MainMenue");//シーン移動します
+		yield return new WaitForSeconds(2.3f);//2秒待ちます
+		SceneManager.LoadScene (sceneName);//シーン移動します
 	}
 }

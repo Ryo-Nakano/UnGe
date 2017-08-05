@@ -20,13 +20,18 @@ public class TitleSceneManager : MonoBehaviour {
 
 	//MainMenueに移動するメソッド定義
 	public void MoveToMainMenue(){//ボタン押した時呼び出し
-		StartCoroutine("MoveSceneWithTimer");//ボタン押すと同時にコルーチン呼び出し
+//		if (PlayerPrefs.HasKey ("UserName") == true) {//UserNameが存在する時
+			StartCoroutine("MoveSceneWithTimer", "MainMenue");//普通にシーン遷移(MainMenueへ)
+//		} else {//UserName存在しない時→初プレイの時
+//			StartCoroutine("MoveSceneWithTimer", "GetUserName");
+//		}
 	}
 
-	IEnumerator MoveSceneWithTimer(){
+	//シーン遷移するメソッド(stringの引数渡してそのシーンい移動！)
+	IEnumerator MoveSceneWithTimer(string sceneName){
 		audioSource.PlayOneShot(buttonSound);//音出します
 		yield return new WaitForSeconds(2.3f);//2秒待ちます
-		SceneManager.LoadScene ("MainMenue");//シーン移動します
+		SceneManager.LoadScene (sceneName);//シーン移動します
 	}
 		
 }
