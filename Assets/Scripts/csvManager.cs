@@ -16,10 +16,10 @@ public class csvManager : MonoBehaviour
 	{
 		
 		TextAsset data = (TextAsset)Resources.Load (dataPath);//Resourcesフォルダからデータの取得！
-		Debug.Log (data.ToString ());
+//		Debug.Log (data.ToString ());
 
 		string[] rows = data.ToString ().Split ("\n" [0]);//先ず横に切って、その1行1行をrowsにぶち込む！(stringに変換！)
-		Debug.Log (rows.Length);
+//		Debug.Log (rows.Length);
 
 		string[] cols = rows [0].Split ("," [0]);//次はどっかのrowを縦に切る！(要素数の取得が目的)
 
@@ -35,7 +35,7 @@ public class csvManager : MonoBehaviour
 
 			for (int j = 0; j < cols.Length; ++j) {
 				csvData [i, j] = cols [j];
-				Debug.Log ("(" + i + "," + j + ") = " + csvData [i, j]);
+//				Debug.Log ("(" + i + "," + j + ") = " + csvData [i, j]);
 			}
 		}
 

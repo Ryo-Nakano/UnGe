@@ -19,9 +19,11 @@ public class PlayerController : MonoBehaviour {
 
 	public Text howManyDoorsText;
 	public Text nowScore;
+	bool gameClear = false;//ゲームクリアしたか、してないか(通常false)
 
-	int howManyDoors = 10;//残りDoor枚数表示用
+	int howManyDoors = 10;//残りDoor枚数表示用 & クリアしたかしてないか判断
 	int count = 0;//スコア格納用
+//	int clearCount;//クリア回数　　これいらん？
 
 	// Use this for initialization
 	void Start () {
@@ -30,6 +32,10 @@ public class PlayerController : MonoBehaviour {
 
 		howManyDoorsText.text = "残りDoor枚数 : " + howManyDoors;//先ず最初にドア残り枚数表示
 		nowScore.text = "Score : " + 0;
+
+//		if(PlayerPrefs.HasKey("ClearCount") == true){//"ClearCount"が存在する時！
+//			clearCount = PlayerPrefs.GetInt("ClearCount");//"ClearCount"をclearCountに保持！
+//		}
 	}
 	
 	// Update is called once per frame
@@ -78,14 +84,20 @@ public class PlayerController : MonoBehaviour {
 
 				//残りDoor枚数-1の処理
 				howManyDoors--;//Door枚数-1
+				if(howManyDoors == 0){//残りドア枚数が0の時→クリアした時！
+//					clearCount++;//クリアカウントに1足す
+//					PlayerPrefs.SetInt("ClearCount", clearCount);//"ClearCount"のkeyでclearCountで保存！
+					gameClear = true;//gameClearをtrueにする！
+				}
+
 				howManyDoorsText.text = "残りDoor枚数 : " + howManyDoors;//残りDoor枚数表示
 
 				count += 100;
 				nowScore.text = "Score : " + count;//現在のスコア表示
 
 				audioSource.PlayOneShot (successSound);//扉突破時効果音鳴らす
-
 				Instantiate (goodEffect, this.transform.position, this.transform.rotation * Quaternion.Euler(-90, 0, 0));//Playerの位置にInstantiate
+
 
 				//Door通れないとき
 			} else {
@@ -97,8 +109,6 @@ public class PlayerController : MonoBehaviour {
 				audioSource.PlayOneShot (gameOverSound);
 				Destroy (bgm);
 				Debug.Log("GoToGameOverScene");
-
-				//効果音鳴らす
 			}
 		}
 
@@ -117,6 +127,8 @@ public class PlayerController : MonoBehaviour {
 
 	//GameOverシーンに移動する
 	void MoveToGameOver(){
+		DataManager.instance.AddRow (count, gameClear);
+		Debug.Log ("SAVE!");
 		SceneManager.LoadScene("GameOver");
 	}
 }

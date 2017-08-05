@@ -22,24 +22,22 @@ public class DataManager : MonoBehaviour
 		Load ();
 	}
 
-	void Start ()
-	{
-		DataManager.instance.AddRow (100, true);//行の追加 && 新らしいデータ追加！
-		Debug.Log("SAVE");
-		DataManager.instance.Save();
-		
+	void Start (){
+//		/DataManager.instance.AddRow (100, true);//行の追加 && 新らしいデータ追加！
+//		Debug.Log("SAVE");
+//		DataManager.instance.Save();
 	}
 
 	//CSVファイルを読み込む関数
 	public void Load ()
 	{
-		playLog = csvManager.GetCsvData ("CSV/test");
+		playLog = csvManager.GetCsvData ("CSV/PlayLog");
 	}
 
 	//CSVファイルに書き込みを行う関数
 	public void Save ()
 	{
-		csvManager.WriteData ("CSV/test.csv", playLog);
+		csvManager.WriteData ("CSV/PlayLog.csv", playLog);
 	}
 
 	//playLogの要素数追加→要は行数追加！
