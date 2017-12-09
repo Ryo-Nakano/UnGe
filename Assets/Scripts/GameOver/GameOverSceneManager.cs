@@ -34,8 +34,6 @@ public class GameOverSceneManager : MonoBehaviour {
 			if (highScore < lastScore) {//直近の結果の方がhighScoreよりも高かった時
 				highScore = lastScore;//highScoreにlastSccoreを代入して
 				PlayerPrefs.SetInt ("HighScore",lastScore);//lastScoreの値をHighScoreとして保存
-			} else {//普通にhighScoreが最強だった場合
-				//				highScore = PlayerPrefs.GetInt("HighScore");
 			}
 		}
 

@@ -119,7 +119,17 @@ public class DataManager : MonoBehaviour
 		//ゲームクリアが保証されている場合にのみデータの送信を行えば、取り敢えずあ大丈夫かな？
 	}
 
+	//===平均突破Door枚数拾ってくる！===
+	float avePassedDoorCount;//平均ドア突破枚数拾って、入れとく変数！
+	int sumPassedDoorCount;
 
+	void AvePassedDoorCount(){
+		for(int i = 0; i < playLog.GetLength (0) - 1; i++){//playLogの行数-1回だけ回す！
+			sumPassedDoorCount += int.Parse(playLog[i + 1, 1]);//突破ドア枚数の合計！
+			avePassedDoorCount = sumPassedDoorCount / playLog.GetLength (0) - 1;//平均突破ドア枚数！
+		}
 
-
+	}
 }
+
+
