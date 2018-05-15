@@ -14,7 +14,8 @@ public class test : MonoBehaviour {
 		// オブジェクトに値を設定
 
 //		testClass["message1"] = "Hello, NAKANO!";//testClassにmessage1っていう列を作って、そこに"Hello,NAKANO"を追加！
-		playLogs.Add ("message2", "What's up NAKANO!");//testClassにmessage2っていう列を作って、そこに"Good Morning NAKANO"を追加！
+		playLogs.Add ("message2", "What's up NAKANO!");
+		playLogs.Add("message", "hogehoge");//testClassにmessage2っていう列を作って、そこに"Good Morning NAKANO"を追加！
 		//どうやら、message2のフィールドが存在する時はただ値を追加するだけの役割果たしてくれるらしい！
 
 //		obj.setObjectId("updateTestObjectId");//ObjectIdを更新することができる！

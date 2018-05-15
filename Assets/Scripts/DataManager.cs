@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;//←これはなんだ？
+using NCMB;
 
 //PlayLogをCSVファイルに貯めておく為のクラス！
 public class DataManager : MonoBehaviour
@@ -22,18 +23,26 @@ public class DataManager : MonoBehaviour
 			Destroy (this.gameObject);//最初の1回以降は即削除される
 		}
 
-		Load ();//CSVファイル"PlayLog"をplayLogに格納！
+		Load ();//CSVファイル"PlayLog"を変数playLogに格納！
 	}
 
 	void Start (){
 
 	}
 
+
+
+
+	//- * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - *
+
+
+
+
 	//CSVファイルを読み込む関数
-	public void Load ()
-	{
-		playLog = csvManager.GetCsvData ("CSV/PlayLog");//Resourcesフォルダ内のPlayLogを取得→2次元配列に変換して変数playLogの中に格納
-	}
+    public void Load()
+    {
+        playLog = csvManager.GetCsvData("CSV/PlayLog");//Resourcesフォルダ内のPlayLogを取得→2次元配列に変換して変数playLogの中に格納
+    }
 
 	//CSVファイルに書き込みを行う関数
 	public void Save ()
@@ -73,8 +82,8 @@ public class DataManager : MonoBehaviour
 
 	//=====================playLogいい感じに拾って来て、いい感じに加工して、いい感じの変数に入れる関数！=====================
 
-	//===playCount拾って来る！===
-	int playCount;
+	//===【完】playCount拾って来る！===
+	int playCount;//総Play回数
 
 	void PlayCount(){
 		playCount = playLog.GetLength (0) - 1;//総行数-1=総プレイ回数！
@@ -84,8 +93,8 @@ public class DataManager : MonoBehaviour
 	}
 
 
-	//===clearCount拾って来る===
-	int clearCount;
+	//===【完】clearCount拾って来る===
+	int clearCount;//総クリア回数
 
 	void ClearCount(){
 		for(int i = 0; i < playLog.GetLength (0) - 1; i++){//playLogの行数-1回だけ回す！
@@ -99,12 +108,12 @@ public class DataManager : MonoBehaviour
 	}
 
 
-	//==========firstClearCount拾って来る！==========
+	//==========【完】firstClearPlayCount拾って来る！==========
 
-	int firstClearPlayCount;
+	int firstClearPlayCount;//初回クリアまでに何回要したか
 	bool gameClear = false;//クリアしたかどうか！(普通はfalse)
 
-	void FirstClearCount(){
+	void CulculateFirstClearCount(){
 		//初回クリアまでの回数計測
 		for(int i = 0; i < playLog.GetLength (0) - 1; i++){//playLogの行数-1回だけ回す！
 			if(int.Parse(playLog[i + 1, 2]) != 1){//gameClearedの値が1でない時→クリアでない時
@@ -124,8 +133,8 @@ public class DataManager : MonoBehaviour
 
 
 	//==========【完】平均突破Door枚数拾ってくる！==========
-	public float ave;//平均ドア突破枚数を格納しておく為の変数
-	public float sum;//合計ドア突破枚数を格納しておく為の変数
+	public float ave;//"平均"ドア突破枚数
+	public float sum;//"合計"ドア突破枚数
 
 	public void PassedDoorCount(){
 		for(int i = 0; i < playLog.GetLength (0) - 1; i++){//playLogの行数-1回だけ回す！
@@ -133,6 +142,72 @@ public class DataManager : MonoBehaviour
 		}
 		sum = sum / 100;//sumの値を100で割る(score→枚数にする為)
 		ave = float.Parse((sum / (playLog.GetLength(0) - 1)).ToString("f1"));//平均突破ドア枚数！
+	}
+
+
+
+	//=====================NCMBと通信、データの保存や取得をする関数=====================
+
+	//-*-*- 使うKey一覧 *-*-*
+
+	//▶︎playCount (総プレイ回数)
+	//▶︎ave (平均ドア突破枚数)
+	//▶︎sum (合計ドア突破枚数)
+	//▶︎firstClearPlayCount (初回クリアまでのプレイ回数)
+	//▶︎clearCount (クリア回数)
+
+	//-*-*-*-*-*-*-*-*-*-*-*
+
+    //NCMBにplayデータを保存する関数
+	void SaveNCMB(NCMBObject ncmbObj)//引数にNCMBオブジェクト取る！
+	{
+		if(PlayerPrefs.HasKey("objectId") == true)//objectId持ってた時(2回目以降のセーブの時)
+		{
+			//Updateの処理
+			string objectId = PlayerPrefs.GetString("objectId");//PlayerPrefsからobjectIdを取得→変数objectIdに格納
+			ncmbObj.ObjectId = objectId;
+			ncmbObj.FetchAsync((NCMBException e) =>
+			{
+				if (e != null) 
+				{
+					//エラー処理
+					Debug.Log("Fetch NCMB Faild");
+                } 
+				else
+				{
+					//成功時の処理
+					ncmbObj.Add("playCount", playCount);
+                    ncmbObj.Add("ave", ave);
+                    ncmbObj.Add("sum", sum);
+                    ncmbObj.Add("︎firstClearPlayCount", firstClearPlayCount);
+                    ncmbObj.Add("clearCount", clearCount);
+                }
+			});
+		}
+		else//objectId持ってない時(初セーブの時)
+		{
+			//新しく行追加
+			ncmbObj.Add("playCount", playCount);
+			ncmbObj.Add("ave", ave);
+			ncmbObj.Add("sum", sum);
+			ncmbObj.Add("︎firstClearPlayCount", firstClearPlayCount);
+			ncmbObj.Add("clearCount", clearCount);
+
+			PlayerPrefs.SetString("objectId", ncmbObj.ObjectId);//NCMBObjectのObjectIdを"objectId"キーでPlayerPrefsに保存
+		}
+
+		ncmbObj.SaveAsync((NCMBException e) => {//eには"例外(exeption)"が入ってる→来たらエラー来なかったらok！    
+			if (e != null)//eが空でない時→エラーの時！
+            {
+             //エラー時の処理
+                Debug.Log("Missed!");
+            }
+			else//eが空の時→エラーの時！
+            {
+             //成功時の処理
+                Debug.Log("SaveCompleted!!!");
+            }
+        });
 	}
 }
 
