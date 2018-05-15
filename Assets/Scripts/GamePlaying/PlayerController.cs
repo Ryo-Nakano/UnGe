@@ -23,7 +23,9 @@ public class PlayerController : MonoBehaviour {
 
 	int howManyDoors = 10;//残りDoor枚数表示用 & クリアしたかしてないか判断
 	int count = 0;//スコア格納用
-//	int clearCount;//クリア回数　　これいらん？
+				  //	int clearCount;//クリア回数　　これいらん？
+
+	DataManager dm;//DataManagerのインスタンスを格納しておく為の変数
 
 	// Use this for initialization
 	void Start () {
@@ -32,6 +34,8 @@ public class PlayerController : MonoBehaviour {
 
 		howManyDoorsText.text = "残りDoor枚数 : " + howManyDoors;//先ず最初にドア残り枚数表示
 		nowScore.text = "Score : " + 0;
+
+		dm = GameObject.Find("DataManager").GetComponent<DataManager>();;
 
 //		if(PlayerPrefs.HasKey("ClearCount") == true){//"ClearCount"が存在する時！
 //			clearCount = PlayerPrefs.GetInt("ClearCount");//"ClearCount"をclearCountに保持！
@@ -127,8 +131,15 @@ public class PlayerController : MonoBehaviour {
 
 	//GameOverシーンに移動する
 	void MoveToGameOver(){
-		DataManager.instance.AddRow (count, gameClear);//行足して...
-		DataManager.instance.Save();//更新内容をCSVファイル適用！
+		dm.AddRow (count, gameClear);//行足して...
+		dm.Save();//更新内容をCSVファイル適用！
+
+        //=====================
+		dm.PassedDoorCount();//突破ドア枚数の平均・合計を計算
+		Debug.Log("ave : " + dm.ave);//ドア突破枚数の平均
+		Debug.Log("sum : " + dm.sum);//ドア突破枚数の合計
+		//=====================
+
 		Debug.Log ("SAVE!");
 		SceneManager.LoadScene("GameOver");
 	}

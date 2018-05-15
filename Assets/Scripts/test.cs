@@ -7,7 +7,7 @@ public class test : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		// クラスのNCMBObjectを作成
+		// NCMBObjectクラスのインスタンスを作成→変数playLogsに格納
 		NCMBObject playLogs = new NCMBObject("PlayLogs");//新しいクラス(スプレッドシート作成！)
 
 
@@ -26,7 +26,8 @@ public class test : MonoBehaviour {
 				//エラー時の処理
 				Debug.Log("Missed!");
 			} else {//eが空の時→エラーの時！
-				//成功時の処理
+					//成功時の処理
+				Debug.Log("SaveCompleted!!!");
 			}                   
 		});
 

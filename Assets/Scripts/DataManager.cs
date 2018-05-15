@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;//←これはなんだ？
 
+//PlayLogをCSVファイルに貯めておく為のクラス！
 public class DataManager : MonoBehaviour
 {
 
 	public static DataManager instance;
-	public string[,] playLog;
-//string型の2次元配列playLogを定義！
+	public string[,] playLog;//string型の2次元配列playLogを定義→取得したcsvファイルを2次元配列に直してぶち込んでおく！
 
 	// Use this for initialization
 	void Awake ()
 	{//Start関数より早く実行！
+
+        //シングルトンデザインパターンにする！
 		if (instance == null) {//最初の1回だけ呼ばれる実装！
 			instance = this;
 			DontDestroyOnLoad (this);
@@ -30,7 +32,7 @@ public class DataManager : MonoBehaviour
 	//CSVファイルを読み込む関数
 	public void Load ()
 	{
-		playLog = csvManager.GetCsvData ("CSV/PlayLog");
+		playLog = csvManager.GetCsvData ("CSV/PlayLog");//Resourcesフォルダ内のPlayLogを取得→2次元配列に変換して変数playLogの中に格納
 	}
 
 	//CSVファイルに書き込みを行う関数
@@ -44,10 +46,11 @@ public class DataManager : MonoBehaviour
 	{
 		int rowCount = playLog.GetLength (0);//行数取得！
 		int colCount = playLog.GetLength (1);//列数獲得！
-		//コピ
+
+        //既存のものより1行だけ多い2次元配列を作成！
 		string[,] array = new string[rowCount + 1, colCount];
 
-		//今までのデータをコピー
+		//今までのデータを全部ぶち込む！
 		for (int i = 0; i < rowCount; i++) {
 			for (int j = 0; j < colCount; j++) {
 				array [i, j] = playLog [i, j];
@@ -96,7 +99,7 @@ public class DataManager : MonoBehaviour
 	}
 
 
-	//===firstClearCount拾って来る！===
+	//==========firstClearCount拾って来る！==========
 
 	int firstClearPlayCount;
 	bool gameClear = false;//クリアしたかどうか！(普通はfalse)
@@ -119,16 +122,17 @@ public class DataManager : MonoBehaviour
 		//ゲームクリアが保証されている場合にのみデータの送信を行えば、取り敢えずあ大丈夫かな？
 	}
 
-	//===平均突破Door枚数拾ってくる！===
-	float avePassedDoorCount;//平均ドア突破枚数拾って、入れとく変数！
-	int sumPassedDoorCount;
 
-	void AvePassedDoorCount(){
+	//==========【完】平均突破Door枚数拾ってくる！==========
+	public float ave;//平均ドア突破枚数を格納しておく為の変数
+	public float sum;//合計ドア突破枚数を格納しておく為の変数
+
+	public void PassedDoorCount(){
 		for(int i = 0; i < playLog.GetLength (0) - 1; i++){//playLogの行数-1回だけ回す！
-			sumPassedDoorCount += int.Parse(playLog[i + 1, 1]);//突破ドア枚数の合計！
-			avePassedDoorCount = sumPassedDoorCount / playLog.GetLength (0) - 1;//平均突破ドア枚数！
+			sum += int.Parse(playLog[i + 1, 1]);//突破ドア枚数の合計！
 		}
-
+		sum = sum / 100;//sumの値を100で割る(score→枚数にする為)
+		ave = float.Parse((sum / (playLog.GetLength(0) - 1)).ToString("f1"));//平均突破ドア枚数！
 	}
 }
 
