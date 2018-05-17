@@ -136,11 +136,11 @@ public class PlayerController : MonoBehaviour {
 
         //=====================
 		dm.PassedDoorCount();//突破ドア枚数の平均・合計を計算
-		Debug.Log("ave : " + dm.ave);//ドア突破枚数の平均
-		Debug.Log("sum : " + dm.sum);//ドア突破枚数の合計
+		//Debug.Log("ave : " + dm.ave);//ドア突破枚数の平均
+		//Debug.Log("sum : " + dm.sum);//ドア突破枚数の合計
 		//=====================
 
-		Debug.Log ("SAVE!");
+		//Debug.Log ("SAVE!");
 		SceneManager.LoadScene("GameOver");
 	}
 }

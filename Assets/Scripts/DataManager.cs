@@ -27,12 +27,20 @@ public class DataManager : MonoBehaviour
 	}
 
 	void Start (){
+		PlayerPrefs.DeleteKey("objectId");
 
+		playCount = 2;
+		firstClearPlayCount = 2;
+		clearCount = 2;
+		ave = 2;
+		sum = 2;
+
+		SaveNCMB();//ちゃんとNCMBと通信されるのか and 中のロジックがちゃんとワークするのかのテスト！(これがちゃんと動けばあとは持たせる値を変数から取ってきた値にすればいいだけだから)
 	}
 
 
 
-
+    
 	//- * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - * - *
 
 
@@ -150,65 +158,72 @@ public class DataManager : MonoBehaviour
 
 	//-*-*- 使うKey一覧 *-*-*
 
-	//▶︎playCount (総プレイ回数)
-	//▶︎ave (平均ドア突破枚数)
-	//▶︎sum (合計ドア突破枚数)
-	//▶︎firstClearPlayCount (初回クリアまでのプレイ回数)
-	//▶︎clearCount (クリア回数)
+	//▶︎PlayCount (総プレイ回数)
+	//▶︎Ave (平均ドア突破枚数)
+	//▶︎Sum (合計ドア突破枚数)
+	//▶︎FirstClearPlayCount (初回クリアまでのプレイ回数)
+	//▶︎ClearCount (クリア回数)
 
 	//-*-*-*-*-*-*-*-*-*-*-*
+    
+	//NCMBにplayデータを保存する関数
+	void SaveNCMB()//引数にNCMBオブジェクト取る！
+    {
+		//NCMBObjectのインスタンスを作成→変数ncmbObjに格納
+        NCMBObject obj = new NCMBObject("PlayLogs");
 
-    //NCMBにplayデータを保存する関数
-	void SaveNCMB(NCMBObject ncmbObj)//引数にNCMBオブジェクト取る！
-	{
-		if(PlayerPrefs.HasKey("objectId") == true)//objectId持ってた時(2回目以降のセーブの時)
-		{
-			//Updateの処理
-			string objectId = PlayerPrefs.GetString("objectId");//PlayerPrefsからobjectIdを取得→変数objectIdに格納
-			ncmbObj.ObjectId = objectId;
-			ncmbObj.FetchAsync((NCMBException e) =>
-			{
-				if (e != null) 
-				{
-					//エラー処理
-					Debug.Log("Fetch NCMB Faild");
-                } 
-				else
-				{
-					//成功時の処理
-					ncmbObj.Add("playCount", playCount);
-                    ncmbObj.Add("ave", ave);
-                    ncmbObj.Add("sum", sum);
-                    ncmbObj.Add("︎firstClearPlayCount", firstClearPlayCount);
-                    ncmbObj.Add("clearCount", clearCount);
-                }
-			});
-		}
-		else//objectId持ってない時(初セーブの時)
-		{
-			//新しく行追加
-			ncmbObj.Add("playCount", playCount);
-			ncmbObj.Add("ave", ave);
-			ncmbObj.Add("sum", sum);
-			ncmbObj.Add("︎firstClearPlayCount", firstClearPlayCount);
-			ncmbObj.Add("clearCount", clearCount);
-
-			PlayerPrefs.SetString("objectId", ncmbObj.ObjectId);//NCMBObjectのObjectIdを"objectId"キーでPlayerPrefsに保存
-		}
-
-		ncmbObj.SaveAsync((NCMBException e) => {//eには"例外(exeption)"が入ってる→来たらエラー来なかったらok！    
-			if (e != null)//eが空でない時→エラーの時！
+        if (PlayerPrefs.HasKey("objectId") == true)//objectId持ってた時(2回目以降のセーブの時)
+        {
+            //Updateの処理
+            string objectId = PlayerPrefs.GetString("objectId");//PlayerPrefsからobjectIdを取得→変数objectIdに格納
+			//そもそもここまで処理潜れてなかった
+            Debug.Log(objectId);//ちゃんとここ中身あるのか確認！:test
+            obj.ObjectId = objectId;
+            obj.FetchAsync((NCMBException e) =>
             {
-             //エラー時の処理
+                if (e != null)
+                {
+                    //エラー処理
+                    Debug.Log("Fetch NCMB Faild");
+                }
+                else
+                {
+                    //成功時の処理
+					obj.Add("PlayCount", playCount);
+					obj.Add("Ave", ave);
+					obj.Add("Sum", sum);
+					obj.Add("︎FirstClearPlayCount", firstClearPlayCount);
+					obj.Add("ClearCount", clearCount);
+                }
+            });
+        }
+        else//objectId持ってない時(初セーブの時)
+        {
+			//新しく行追加
+			obj.Add("PlayCount", playCount);
+            obj.Add("Ave", ave);
+			obj.Add("Sum", sum);
+			obj.Add("FirstClearPlayCount", firstClearPlayCount);
+			obj.Add("ClearCount", clearCount);
+		}
+
+		obj.SaveAsync((NCMBException e) => {//eには"例外(exeption)"が入ってる→来たらエラー来なかったらok！    
+            if (e != null)//eが空でない時→エラーの時！
+            {
+                //エラー時の処理
                 Debug.Log("Missed!");
             }
-			else//eが空の時→エラーの時！
+            else//eが空の時→エラーの時！
             {
-             //成功時の処理
+                //成功時の処理
                 Debug.Log("SaveCompleted!!!");
+
+				//NCMBObjectのObjectIdを"objectId"キーでPlayerPrefsに保存(次回以降のセーブで同一行のデータを更新していく形にしたい為)
+				PlayerPrefs.SetString("objectId", obj.ObjectId);
+                Debug.Log(obj.ObjectId);//ObjectIdの存在を確認！
             }
         });
-	}
+    }
 }
 
 
