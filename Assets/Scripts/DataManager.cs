@@ -11,9 +11,9 @@ public class DataManager : MonoBehaviour
 	public static DataManager instance;
 	public string[,] playLog;//string型の2次元配列playLogを定義→取得したcsvファイルを2次元配列に直してぶち込んでおく！
 
-	// Use this for initialization
+	//Start関数より早く実行！
 	void Awake ()
-	{//Start関数より早く実行！
+	{
 
         //シングルトンデザインパターンにする！
 		if (instance == null) {//最初の1回だけ呼ばれる実装！
@@ -27,15 +27,7 @@ public class DataManager : MonoBehaviour
 	}
 
 	void Start (){
-		PlayerPrefs.DeleteKey("objectId");
-
-		playCount = 2;
-		firstClearPlayCount = 2;
-		clearCount = 2;
-		ave = 2;
-		sum = 2;
-
-		SaveNCMB();//ちゃんとNCMBと通信されるのか and 中のロジックがちゃんとワークするのかのテスト！(これがちゃんと動けばあとは持たせる値を変数から取ってきた値にすればいいだけだから)
+		
 	}
 
 
@@ -90,12 +82,29 @@ public class DataManager : MonoBehaviour
 
 	//=====================playLogいい感じに拾って来て、いい感じに加工して、いい感じの変数に入れる関数！=====================
 
+	//===HighScoreを探してくる===
+	int highScore = 0;//ハイスコアを格納しておく為の変数(初期値0)
+
+	public void FindHighScore()
+	{
+		for (int i = 0; i < playLog.GetLength(0) - 1; i++)//playLogの行数-1回だけ回す！
+        {
+			if (int.Parse(playLog[i + 1, 1]) > highScore)//参照した値が手元に持ってるhighScoreよりも大きかったとき
+            {
+				highScore = int.Parse(playLog[i + 1, 1]);//highScoreの値を上書き！
+            }
+        }
+
+		Debug.Log("HighScore : " + highScore);
+	}
+
+
 	//===【完】playCount拾って来る！===
 	int playCount;//総Play回数
 
-	void PlayCount(){
+	public void PlayCount(){
 		playCount = playLog.GetLength (0) - 1;//総行数-1=総プレイ回数！
-		Debug.Log(playCount);
+		Debug.Log("playCount : " + playCount);
 
 		//データを送る処理
 	}
@@ -104,13 +113,13 @@ public class DataManager : MonoBehaviour
 	//===【完】clearCount拾って来る===
 	int clearCount;//総クリア回数
 
-	void ClearCount(){
+	public void ClearCount(){
 		for(int i = 0; i < playLog.GetLength (0) - 1; i++){//playLogの行数-1回だけ回す！
 			if(int.Parse(playLog[i + 1, 2]) == 1){//gameClearedの値が1→クリアだった時
 				clearCount++;//clearCountに1づつ足していく
 			}
 		}
-		Debug.Log (clearCount);
+		Debug.Log ("clearCount : " + clearCount);
 
 		//データを送る処理
 	}
@@ -118,10 +127,10 @@ public class DataManager : MonoBehaviour
 
 	//==========【完】firstClearPlayCount拾って来る！==========
 
-	int firstClearPlayCount;//初回クリアまでに何回要したか
+	int firstClearPlayCount = 0;//初回クリアまでに何回要したか(初期値0)
 	bool gameClear = false;//クリアしたかどうか！(普通はfalse)
 
-	void CulculateFirstClearCount(){
+	public void CulculateFirstClearCount(){
 		//初回クリアまでの回数計測
 		for(int i = 0; i < playLog.GetLength (0) - 1; i++){//playLogの行数-1回だけ回す！
 			if(int.Parse(playLog[i + 1, 2]) != 1){//gameClearedの値が1でない時→クリアでない時
@@ -137,6 +146,8 @@ public class DataManager : MonoBehaviour
 			//データを送る処理
 		}
 		//ゲームクリアが保証されている場合にのみデータの送信を行えば、取り敢えずあ大丈夫かな？
+
+		Debug.Log("firstClearPlayCount : " + firstClearPlayCount);
 	}
 
 
@@ -150,6 +161,9 @@ public class DataManager : MonoBehaviour
 		}
 		sum = sum / 100;//sumの値を100で割る(score→枚数にする為)
 		ave = float.Parse((sum / (playLog.GetLength(0) - 1)).ToString("f1"));//平均突破ドア枚数！
+
+		Debug.Log("sum" + sum);
+		Debug.Log("ave" + ave); 
 	}
 
 
@@ -167,33 +181,32 @@ public class DataManager : MonoBehaviour
 	//-*-*-*-*-*-*-*-*-*-*-*
     
 	//NCMBにplayデータを保存する関数
-	void SaveNCMB()//引数にNCMBオブジェクト取る！
+	public void SaveNCMB()
     {
 		//NCMBObjectのインスタンスを作成→変数ncmbObjに格納
-        NCMBObject obj = new NCMBObject("PlayLogs");
+        NCMBObject obj = new NCMBObject("OnlineRanking");//OnlineRankingテーブルのインスタンス作成！
 
         if (PlayerPrefs.HasKey("objectId") == true)//objectId持ってた時(2回目以降のセーブの時)
         {
             //Updateの処理
-            string objectId = PlayerPrefs.GetString("objectId");//PlayerPrefsからobjectIdを取得→変数objectIdに格納
-			//そもそもここまで処理潜れてなかった
-            Debug.Log(objectId);//ちゃんとここ中身あるのか確認！:test
-            obj.ObjectId = objectId;
-            obj.FetchAsync((NCMBException e) =>
-            {
+			NCMBQuery<NCMBObject> query = new NCMBQuery<NCMBObject>("OnlineRanking");
+			query.WhereEqualTo("objectId", PlayerPrefs.GetString("objectId"));
+            query.FindAsync((List<NCMBObject> objList, NCMBException e) => {
                 if (e != null)
                 {
-                    //エラー処理
-                    Debug.Log("Fetch NCMB Faild");
+                    //検索失敗時の処理
+                    Debug.Log("ミスっとるで！");
                 }
                 else
                 {
-                    //成功時の処理
-					obj.Add("PlayCount", playCount);
-					obj.Add("Ave", ave);
-					obj.Add("Sum", sum);
-					obj.Add("︎FirstClearPlayCount", firstClearPlayCount);
-					obj.Add("ClearCount", clearCount);
+                    //値の更新
+					objList[0]["PlayCount"] = playCount;//プレイ総数
+					objList[0]["Ave"] = ave;//平均Door突破枚数
+					objList[0]["Sum"] = sum;//合計Door突破枚数
+					objList[0]["FirstClearPlayCount"] = firstClearPlayCount;//初回クリアまでのプレイ回数
+					objList[0]["ClearCount"] = clearCount;//クリア回数
+					objList[0]["HighScore"] = highScore;//ハイスコア
+                    objList[0].SaveAsync();//変更内容のsave
                 }
             });
         }
@@ -205,24 +218,23 @@ public class DataManager : MonoBehaviour
 			obj.Add("Sum", sum);
 			obj.Add("FirstClearPlayCount", firstClearPlayCount);
 			obj.Add("ClearCount", clearCount);
+
+			obj.SaveAsync((NCMBException e) => {//eには"例外(exeption)"が入ってる→来たらエラー来なかったらok！    
+                if (e != null)//eが空でない時→エラーの時！
+                {
+                    //エラー時の処理
+                    Debug.Log("NCMB Save Missed!");
+                }
+                else//eが空の時→成功した時！
+                {
+                    //成功時の処理
+                    Debug.Log("NCMB Save Completed!!!");
+
+                    //NCMBObjectのObjectIdを"objectId"キーでPlayerPrefsに保存(次回以降のセーブで同一行のデータを更新していく形にしたい為)
+                    PlayerPrefs.SetString("objectId", obj.ObjectId);
+                }
+            });
 		}
-
-		obj.SaveAsync((NCMBException e) => {//eには"例外(exeption)"が入ってる→来たらエラー来なかったらok！    
-            if (e != null)//eが空でない時→エラーの時！
-            {
-                //エラー時の処理
-                Debug.Log("Missed!");
-            }
-            else//eが空の時→エラーの時！
-            {
-                //成功時の処理
-                Debug.Log("SaveCompleted!!!");
-
-				//NCMBObjectのObjectIdを"objectId"キーでPlayerPrefsに保存(次回以降のセーブで同一行のデータを更新していく形にしたい為)
-				PlayerPrefs.SetString("objectId", obj.ObjectId);
-                Debug.Log(obj.ObjectId);//ObjectIdの存在を確認！
-            }
-        });
     }
 }
 
