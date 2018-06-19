@@ -44,7 +44,7 @@ public class RankingManager : MonoBehaviour {
 		NCMBQuery<NCMBObject> queryTopRank = new NCMBQuery<NCMBObject>("OnlineRanking");
         queryTopRank.OrderByDescending("HighScore");
         queryTopRank.Limit = 5;
-        queryTopRank.FindAsync((List<NCMBObject> objList, NCMBException e) => {
+		queryTopRank.FindAsync((List<NCMBObject> objList, NCMBException e) => {
 
             if (e != null)//エラーあった時
             {
@@ -79,6 +79,50 @@ public class RankingManager : MonoBehaviour {
 		//===Clear(You)===
 		dm.ClearCount();
 		clearYou.text = dm.clearCount.ToString() + " 回";
-    }
 
+
+
+		int deathCount = 0;
+		int doorSum = 0;
+		float doorAve = 0f;
+		int clear = 0;
+
+
+		NCMBQuery<NCMBObject> query = new NCMBQuery<NCMBObject>("OnlineRanking");//Queryの取得
+
+		query.FindAsync((List<NCMBObject> objList, NCMBException e) => {
+
+			//===DeathCount(World)===
+			for (int i = 0; i < objList.Count; i++)//objListの要素数だけfor回す
+			{
+				deathCount += int.Parse(objList[i]["PlayCount"].ToString());
+			}
+			deathCountWorld.text = deathCount.ToString("f0") + " 回";
+
+
+			//===DoorSum(World)===
+			for (int i = 0; i < objList.Count; i++)//objListの要素数だけfor回す
+            {
+                doorSum += int.Parse(objList[i]["Sum"].ToString());
+            }
+            doorSumWorld.text = doorSum.ToString("f0") + " 枚";
+
+
+			//===DoorAve(World)===
+			for (int i = 0; i < objList.Count; i++)//objListの要素数だけfor回す
+            {
+                doorAve += float.Parse(objList[i]["Ave"].ToString());//hogeにがしがし足してく
+            }
+            doorAve /= objList.Count;
+            doorAveWorld.text = doorAve.ToString("f2") + " 枚";
+
+
+			//===Clear(World)===
+			for (int i = 0; i < objList.Count; i++)//objListの要素数だけfor回す
+            {
+                clear += int.Parse(objList[i]["ClearCount"].ToString());//hogeにがしがし足してく
+            }
+            clearWorld.text = clear.ToString("f0") + " 回";
+		});
+    }
 }

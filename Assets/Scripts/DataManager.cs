@@ -157,7 +157,7 @@ public class DataManager : MonoBehaviour
 		for(int i = 0; i < playLog.GetLength (0) - 1; i++){//playLogの行数-1回だけ回す！
 			sum += int.Parse(playLog[i + 1, 1]);//突破ドア枚数の合計！
 		}
-		sum = sum / 100;//sumの値を100で割る(score→枚数にする為)
+		sum = int.Parse((sum / 100).ToString("f0"));//sumの値を100で割る(score→枚数にする為)
 		ave = float.Parse((sum / (playLog.GetLength(0) - 1)).ToString("f1"));//平均突破ドア枚数！
 
 		Debug.Log("sum" + sum);
