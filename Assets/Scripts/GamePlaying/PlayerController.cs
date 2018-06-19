@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour {
 		howManyDoorsText.text = "残りDoor枚数 : " + howManyDoors;//先ず最初にドア残り枚数表示
 		nowScore.text = "Score : " + 0;
 
-		dm = GameObject.Find("DataManager").GetComponent<DataManager>();;
+		dm = GameObject.Find("DataManager").GetComponent<DataManager>();
 
 //		if(PlayerPrefs.HasKey("ClearCount") == true){//"ClearCount"が存在する時！
 //			clearCount = PlayerPrefs.GetInt("ClearCount");//"ClearCount"をclearCountに保持！

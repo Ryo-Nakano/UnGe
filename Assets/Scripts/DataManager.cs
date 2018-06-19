@@ -100,18 +100,16 @@ public class DataManager : MonoBehaviour
 
 
 	//===【完】playCount拾って来る！===
-	int playCount;//総Play回数
+	public int playCount;//総Play回数
 
 	public void PlayCount(){
 		playCount = playLog.GetLength (0) - 1;//総行数-1=総プレイ回数！
 		Debug.Log("playCount : " + playCount);
-
-		//データを送る処理
 	}
 
 
 	//===【完】clearCount拾って来る===
-	int clearCount;//総クリア回数
+	public int clearCount;//総クリア回数
 
 	public void ClearCount(){
 		for(int i = 0; i < playLog.GetLength (0) - 1; i++){//playLogの行数-1回だけ回す！
