@@ -8,12 +8,13 @@ public class AspectRatioManager : MonoBehaviour
     public float x_aspect = 1242f;
     public float y_aspect = 2208f;
     public CanvasScaler[] canvasScaler = new CanvasScaler[1];
+	public Camera mainCamera;
     public Camera[] subCameras = new Camera[1];
 
     void Awake()
     {
         //Cameraのアスペクト比を設定する
-        Camera camera = GetComponent<Camera>();
+		Camera camera = mainCamera.GetComponent<Camera>();
         Rect rect = calcAspect(x_aspect, y_aspect);
         camera.rect = rect;
 
