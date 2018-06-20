@@ -83,6 +83,11 @@ public class ProfileManager : MonoBehaviour {
 				{
 					alertText.text = "『まさか...湘南乃風...！？！？』";
 				}
+				else if (inputField.text == "キングオブコント" ||
+				         inputField.text == "きんぐおぶこんと")
+                {
+                    alertText.text = "『出ない理由ある？』";
+                }
 				else
 				{
 					alertText.text = "『文字数が多すぎるでごわす！』";

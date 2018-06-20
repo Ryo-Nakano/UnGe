@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;//シーン遷移扱う
+using UnityEngine.UI;
 
 public class MainMenueManager : MonoBehaviour {
 
@@ -15,6 +16,9 @@ public class MainMenueManager : MonoBehaviour {
 
 	[SerializeField] GameObject view3;//View3をUnityからアタッチ
 	Animator slidingVerticalAnimator;//取得したAnimatorを格納しておく為の変数
+
+	[SerializeField] InputField inputField;
+    [SerializeField] Text alertText;
 
 	// Use this for initialization
 	void Start () {
@@ -76,6 +80,8 @@ public class MainMenueManager : MonoBehaviour {
     public void BackToMainMenu2()
     {
 		slidingVerticalAnimator.SetBool("runningV", false);
+		inputField.text = "";
+		alertText.text = "";
 		Debug.Log("View3 → View1");
     }
 }
