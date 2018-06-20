@@ -73,7 +73,7 @@ public class MainMenueManager : MonoBehaviour {
     }
 
     //View3→View1に戻る為の関数
-    public void BackToMain2Menu()
+    public void BackToMainMenu2()
     {
 		slidingVerticalAnimator.SetBool("runningV", false);
 		Debug.Log("View3 → View1");

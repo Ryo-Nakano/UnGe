@@ -63,7 +63,9 @@ public class RankingManager : MonoBehaviour {
         });
 
 
-		//==========RecordsのViewを作成==========
+		//===============RecordsのViewを作成===============
+
+        //==========You==========
 
 		//===DeathCount(You)===
 		dm.PlayCount();
@@ -82,11 +84,11 @@ public class RankingManager : MonoBehaviour {
 
 
 
+        //==========World==========
 		int deathCount = 0;
 		int doorSum = 0;
 		float doorAve = 0f;
 		int clear = 0;
-
 
 		NCMBQuery<NCMBObject> query = new NCMBQuery<NCMBObject>("OnlineRanking");//Queryの取得
 
