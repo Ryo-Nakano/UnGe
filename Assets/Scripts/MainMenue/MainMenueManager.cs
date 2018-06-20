@@ -20,14 +20,24 @@ public class MainMenueManager : MonoBehaviour {
 	[SerializeField] InputField inputField;
     [SerializeField] Text alertText;
 
-	// Use this for initialization
+	int isFirst;//初回起動かどうかを監視するフラグ(0:初回 1:2回目以降)
+	[SerializeField] GameObject backToMenuButton;
+	[SerializeField] Text firstTimeText;//初回だけ表示したい
+
+	private void Awake()
+	{
+		//初回起動時の動作確認用
+		//PlayerPrefs.DeleteKey("isFirst");
+	}
+
 	void Start () {
 		audioSource = gameObject.GetComponent<AudioSource> ();//AudioSourceのコンポーネント取得、AudioSourceクラスのaudioSource変数に格納！
 		slidingHorizontalAnimator = view2.gameObject.GetComponent<Animator>();//View2についてるAnimatorを取得→変数animatorに格納
 		slidingVerticalAnimator = view3.GetComponent<Animator>();//View3についてるAnimatorを取得→変数animatorに格納
+
+		CheckIsFirst();//初回起動かどうかをチェックする関数
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 		
 	}
@@ -79,9 +89,27 @@ public class MainMenueManager : MonoBehaviour {
     //View3→View1に戻る為の関数
     public void BackToMainMenu2()
     {
+		backToMenuButton.gameObject.SetActive(true);//『もどる』ボタンをアクティブに
 		slidingVerticalAnimator.SetBool("runningV", false);
-		inputField.text = "";
-		alertText.text = "";
+		firstTimeText.text = "";
 		Debug.Log("View3 → View1");
     }
+
+    //初回起動かどうか確認する為の関数
+	void CheckIsFirst()
+	{
+		if (PlayerPrefs.HasKey("isFirst") == false)//初回起動の時
+        {
+            Debug.Log("初回！");
+            GoToProfileView();
+            backToMenuButton.gameObject.SetActive(false);//戻るボタンを非アクティブに(UserName決めるまでゲーム始められない)
+			firstTimeText.text = "先ずはメロスに名付けろ！";
+			isFirst = 1;
+            PlayerPrefs.SetInt("isFirst", isFirst);
+        }
+        else//2回目以降起動の時
+        {
+			
+        }
+	}
 }
