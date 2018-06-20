@@ -11,12 +11,16 @@ public class MainMenueManager : MonoBehaviour {
 
     //=====以下、画面遷移の為の変数=====
 	[SerializeField] GameObject view2;//View2をUnityからアタッチ
-    Animator animator;//取得したAnimatorを格納しておく為の変数
+	Animator slidingHorizontalAnimator;//取得したAnimatorを格納しておく為の変数
+
+	[SerializeField] GameObject view3;//View3をUnityからアタッチ
+	Animator slidingVerticalAnimator;//取得したAnimatorを格納しておく為の変数
 
 	// Use this for initialization
 	void Start () {
 		audioSource = gameObject.GetComponent<AudioSource> ();//AudioSourceのコンポーネント取得、AudioSourceクラスのaudioSource変数に格納！
-		animator = view2.gameObject.GetComponent<Animator>();//View2についてるAnimatorを取得→変数animatorに格納
+		slidingHorizontalAnimator = view2.gameObject.GetComponent<Animator>();//View2についてるAnimatorを取得→変数animatorに格納
+		slidingVerticalAnimator = view3.GetComponent<Animator>();//View3についてるAnimatorを取得→変数animatorに格納
 	}
 	
 	// Update is called once per frame
@@ -47,17 +51,31 @@ public class MainMenueManager : MonoBehaviour {
 
     //=====以下、画面遷移の為の関数=====
 
-	//View2に遷移する為の関数
+	//View1→View2に遷移する為の関数
     public void GoToRankingView()
     {
-        animator.SetBool("running", true);
-        Debug.Log("GoToView2");
+        slidingHorizontalAnimator.SetBool("runningH", true);
+        Debug.Log("View1 → View2");
     }
 
-    //View1に戻る為の関数
+    //View2→View1に戻る為の関数
     public void BackToMainMenu()
     {
-        animator.SetBool("running", false);
-        Debug.Log("BackToView1");
+        slidingHorizontalAnimator.SetBool("runningH", false);
+		Debug.Log("View2 → View1");
+    }
+
+	//View1→View3に遷移する為の関数
+    public void GoToProfileView()
+    {
+		slidingVerticalAnimator.SetBool("runningV", true);
+		Debug.Log("View1 → View3");
+    }
+
+    //View3→View1に戻る為の関数
+    public void BackToMain2Menu()
+    {
+		slidingVerticalAnimator.SetBool("runningV", false);
+		Debug.Log("View3 → View1");
     }
 }
